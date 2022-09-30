@@ -1,4 +1,4 @@
-# CobraChat
+# 🐍 CobraChat
 
 Terminal based Chat App.
 

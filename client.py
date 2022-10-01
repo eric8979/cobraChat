@@ -5,7 +5,6 @@ import zmq
 import sys
 
 def main(argv):
-    # Prepare our context and subscriber
     ctx = zmq.Context()
     subscriber = ctx.socket(zmq.SUB)
     subscriber.setsockopt(zmq.SUBSCRIBE, b'')
@@ -32,7 +31,7 @@ def main(argv):
                 publisher.send_string(msg)
                 print("{0}: send status - deactivated".format(clientID))
 
-# usage: python lec-04-prg-08-pub-sub-and-pull-push-client-v2.py client_id
+# Boilerplate code that protects users from accidentally invoking the script.
 if __name__ == '__main__':
     main(sys.argv)
 

@@ -2,7 +2,6 @@
 import zmq
 
 def main():
-    # context and sockets
     ctx = zmq.Context()
     publisher = ctx.socket(zmq.PUB)
     publisher.bind("tcp://*:5557")
@@ -14,6 +13,7 @@ def main():
         print("server: publishing update => ", message)
         publisher.send(message)
 
+# Boilerplate code that protects users from accidentally invoking the script.
 if __name__ == '__main__':
     main()
 

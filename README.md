@@ -1,4 +1,4 @@
-# 🐍 CobraChat
+# 🐍 pyzChat
 
 Terminal based Chat App.
 

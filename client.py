@@ -1,37 +1,40 @@
-# Chat-Client
+# pyzChat-Client
 import random
 import time
 import zmq
 import sys
 
 def main(argv):
-    ctx = zmq.Context()
-    subscriber = ctx.socket(zmq.SUB)
-    subscriber.setsockopt(zmq.SUBSCRIBE, b'')
-    subscriber.connect("tcp://localhost:5557")
-    publisher = ctx.socket(zmq.PUSH)
-    publisher.connect("tcp://localhost:5558")
+    context = zmq.Context()
+    print("Connecting to pyzChat server…")
+    socket = context.socket(zmq.REQ)
+    socket.connect("tcp://localhost:5557")
 
-    clientID = argv[1]
-    random.seed(time.time())
     while True:
-        if subscriber.poll(100) & zmq.POLLIN:
-            message = subscriber.recv()
-            print("{0}: receive status => {1}".format(clientID, message))
-        else:
-            rand = random.randint(1, 100)
-            if rand < 10:
-                time.sleep(1)
-                msg = "(" + clientID + ":ON)"
-                publisher.send_string(msg)
-                print("{0}: send status - activated".format(clientID))
-            elif rand > 90:
-                time.sleep(1)
-                msg = "(" + clientID + ":OFF)"
-                publisher.send_string(msg)
-                print("{0}: send status - deactivated".format(clientID))
+        requestMsg = input('command : ')
+        # SHOW chatrooms
+        if (requestMsg[:3] == "#re") or (requestMsg == "#chatrooms"):
+            socket.send_string("#chatrooms")
+            reply = socket.recv_string()
+            print(f"chatroom list : \n{reply}")
+        # ADD chatroom
+        elif requestMsg == "#addroom":
+            room_name = input("Room name(no spaces) : ")
+            socket.send_string("#addroom " + room_name)
+            reply = socket.recv_string()
+            print(f"chatroom list : \n{reply}")
 
-# Boilerplate code that protects users from accidentally invoking the script.
+        elif requestMsg == "quit":
+            print("Exit pyzChat...")
+            break
+
+
 if __name__ == '__main__':
+    # while True:
+    #     print("LOGO")
+    #     print("Welcome to pyzchat!")
+    #     print("Enter `#refresh` or `#re` if you don't see a room you want to join, Enter `#help` for any other help.")
+    #     print("<Chatrooms>")
+    #     break
     main(sys.argv)
 

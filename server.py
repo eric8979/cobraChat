@@ -1,6 +1,28 @@
 # pyzChat-Server
 import zmq
 
+class Chatroom:
+    def __init__(self, name, host) -> None:
+        self.name = name
+        self.host = host
+        self.party = []
+
+    def join(self):
+        pass
+
+class User:
+    def __init__(self, name) -> None:
+        self.name = name
+        self.id = "345r34e34"    # TODO
+        self.pwd = "1234"
+
+tom = User("tom")
+eric = User("eric")
+joe = User("joe")
+
+users = [tom, eric, joe]
+username = {tom.name, eric.name, joe.name}
+userpwd = {tom.pwd, eric.pwd, joe.pwd}
 chatrooms = ['lion', 'tiger', 'leopard']
 
 def main():
@@ -8,10 +30,17 @@ def main():
     print("pyzChat Server activated...")
     socket = context.socket(zmq.REP)
     socket.bind("tcp://*:5557")
-
     while True:
         request = socket.recv_string()
 
+        if request[:6] == "#login":
+            login_info = request.split()
+            id = login_info[1]
+            pwd = login_info[2]
+            if id in username and pwd in userpwd:
+                # Grant Access
+                pass
+                
         if request == "#chatrooms":
             rooms_str = '\n'.join(chatrooms)
             socket.send_string(rooms_str)
@@ -22,23 +51,8 @@ def main():
             socket.send_string(rooms_str)
 
 
-# Boilerplate code that protects users from accidentally invoking the script.
 if __name__ == '__main__':
     main()
 
 
 # TODO: use django?(web-framework for chatrooms and zmq for a chatroom?)
-
-
-
-# Learning Note
-
-# ZMQ doesn't know anything about the data you send except its size in bytes.
-# Need formatting data before sending
-
-# problem -> check the version(it could be fixed in a later version)
-# How to check ver.
-# import zmq
-#
-# print(f"Current libzmq version is {zmq.zmq_version()}")
-# print(f"Current  pyzmq version is {zmq.__version__}")

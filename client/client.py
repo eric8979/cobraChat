@@ -1,34 +1,38 @@
 # pyzChat-Client
 import zmq
+from intro import intro
+from help import help
 
 def main():
     context = zmq.Context()
     socket = context.socket(zmq.REQ)
     socket.connect("tcp://localhost:5557")
 
-    print("Welcome to pyzChat!")
-    username = input("Set your username : ")
-    socket.send_string(f"#setuser {username}")
-    user = socket.recv_json()
-    print(user)
-    while True:
-        print("Enter #help for commands")
-        message = input(">>> ")
-        if message[0] == "#":
-            if message == "#quit":
-                print("Exit pyzChat...")
-                break
-            commands(socket, message)
-        else:
-            socket.send_string(message)
-            reply = socket.recv_string()
-            print(reply)
+    name = intro() # Print intro msg & ask for username
+    if name == "quit":
+        print("Bye Bye~")
+        return
 
-def commands(socket, message):
+    my_info = {"userid" : 1234, "username" : name}
+    print("Your name/id are all set!\n")
+    print("---------------------------------------")
+    print(f"username : {my_info['username']}")
+    print(f"userid : {my_info['userid']}")
+    print("---------------------------------------")
+    print("Tip : Type `#help` for every(5) commands.")
+
+    # Show chatroom right after user logs in.
+    socket.send_string("#chatrooms")
+    print(socket.recv_string())
+
+    while True:
+        message = input(">>> ")
+        if message == "#quit":
+            print("Exit pyzChat...")
+            break
         # HELP
         if message == "#help":
-            print("Enter #chatrooms for chatrooms")
-            print("Enter #refresh or #re to refresh chatrooms")
+            help()
         # SHOW chatrooms
         elif (message[:3] == "#re") or (message == "#chatrooms"):
             socket.send_string("#chatrooms")
@@ -40,13 +44,11 @@ def commands(socket, message):
             socket.send_string("#addroom " + room_name)
             reply = socket.recv_string()
             print(f"chatroom list : \n{reply}")
-        elif message == "#removeroom":
-            room_name = input("Room name(no spaces) : ")
-            # remove room only if the user is the host
+        # ENTER chatroom
         elif message == "#enterroom":
             room_name = input("Room name : ")
             print(f"Entering the room {room_name}")
-            # enter the room
+            # Enter the room
 
 
 if __name__ == '__main__':

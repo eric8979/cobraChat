@@ -1,6 +1,8 @@
 # 🐍 pyzChat
 
-Terminal based Chat App.
+Simple, Fast and Secure chatting app
+
+- Terminal based Chat App.
 
 - This app uses [ZeroMQ - pyzmq](https://github.com/zeromq/pyzmq) for networking.
 

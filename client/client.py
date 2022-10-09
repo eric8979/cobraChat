@@ -26,7 +26,7 @@ def main():
     print(socket.recv_string())
 
     while True:
-        message = input(">>> ")
+        message = input(f"<👽{my_info['username']}({my_info['userid']})> ")
         if message == "#quit":
             print("Exit pyzChat...")
             break

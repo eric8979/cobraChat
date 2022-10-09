@@ -2,8 +2,10 @@
 
 Simple, Fast and Secure chatting app
 
-- Terminal based Chat App.
+- Simple : Terminal based Chat App with no modules needed.
 
-- This app uses [ZeroMQ - pyzmq](https://github.com/zeromq/pyzmq) for networking.
+<!-- - Fast :  -->
 
 <!-- - Secure : Use "Public-Key Cryptography" for messages. -->
+
+- This app uses [ZeroMQ - pyzmq](https://github.com/zeromq/pyzmq) for networking.

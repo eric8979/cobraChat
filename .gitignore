@@ -1,1 +1,9 @@
-./learn_zmq.py
+learn_zmq.py
+
+client/__pycache__/*
+
+.vscode/*
+
+node_modules/*
+package.json
+package-lock.json

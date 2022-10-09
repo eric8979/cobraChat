@@ -12,23 +12,36 @@ class Chatroom:
 
 
 # Fake chatrooms data
-chatrooms = ['lion', 'tiger', 'leopard']
+lion = Chatroom("lion")
+tiger = Chatroom("tiger")
+leopard = Chatroom("leopard")
+chatrooms = [lion, tiger, leopard]
 
 def main():
     context = zmq.Context()
     print("pyzChat Server activated...")
     socket = context.socket(zmq.REP)
     socket.bind("tcp://*:5557")
+
     while True:
         request = socket.recv_string()
         if request == "#chatrooms":
-            rooms_str = '\n'.join(chatrooms)
-            socket.send_string(rooms_str)
+            rooms = []
+            for i in range(len(chatrooms)):
+                room = f"{i+1}. {chatrooms[i].name} (👨‍👩‍👦‍👦 {len(chatrooms[i].party)}) - ID : {chatrooms[i].id}\n"
+                rooms.append(room)
+            socket.send_string("\n".join(rooms))
         elif request[:8] == "#addroom":
             room_name = request.split()[1]
-            chatrooms.append(room_name)
-            rooms_str = '\n'.join(chatrooms)
-            socket.send_string(rooms_str)
+            # Create a room
+            new_room = Chatroom(room_name)
+            chatrooms.append(new_room)
+            # Fetch rooms
+            rooms = []
+            for i in range(len(chatrooms)):
+                room = f"{i+1}. {chatrooms[i].name} (👨‍👩‍👦‍👦 {len(chatrooms[i].party)}) - ID : {chatrooms[i].id}\n"
+                rooms.append(room)
+            socket.send_string("\n".join(rooms))
 
 
 if __name__ == '__main__':

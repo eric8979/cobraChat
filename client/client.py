@@ -1,56 +1,55 @@
 # pyzChat-Client
 import zmq
-from intro import intro
-from help import help
+import printHelper
 
 def main():
     context = zmq.Context()
     socket = context.socket(zmq.REQ)
     socket.connect("tcp://localhost:5557")
 
-    name = intro() # Print intro msg & ask for username
+    name = printHelper.printIntro() # Print intro msg & ask for username
     if name == "quit":
         print("Bye Bye~")
         return
 
     my_info = {"userid" : 1234, "username" : name}
-    print("Your name/id are all set!\n")
-    print("---------------------------------------")
-    print(f"username : {my_info['username']}")
-    print(f"userid : {my_info['userid']}")
-    print("---------------------------------------")
-    print("Tip : Type `#help` for every(5) commands.")
+    printHelper.printUser(my_info)
 
-    # Show chatroom right after user logs in.
+    # Show chatroom right after user login.
     socket.send_string("#chatrooms")
-    print(socket.recv_string())
+    chatrooms = socket.recv_string()
+    printHelper.printRooms(chatrooms)
 
     while True:
         message = input(f"<👽{my_info['username']}({my_info['userid']})> ")
         if message == "#quit":
+            # erase user info?
             print("Exit pyzChat...")
             break
         # HELP
         if message == "#help":
-            help()
+            printHelper.printHelp()
         # SHOW chatrooms
         elif (message[:3] == "#re") or (message == "#chatrooms"):
             socket.send_string("#chatrooms")
-            reply = socket.recv_string()
-            print(f"chatroom list : \n{reply}")
+            chatrooms = socket.recv_string()
+            printHelper.printRooms(chatrooms)
         # ADD chatroom
         elif message == "#addroom":
             room_name = input("Room name(no spaces) : ")
             socket.send_string("#addroom " + room_name)
-            reply = socket.recv_string()
-            print(f"chatroom list : \n{reply}")
+            chatrooms = socket.recv_string()
+            printHelper.printRooms(chatrooms)
         # ENTER chatroom
         elif message == "#enterroom":
             room_name = input("Room name : ")
-            print(f"Entering the room {room_name}")
+            print(f"Entering the room {room_name}...")
             # Enter the room
+        else:
+            print(f"Command {message} doesn't exists. Try #help to check every(5) commands.")
 
 
 if __name__ == '__main__':
     main()
+
 
